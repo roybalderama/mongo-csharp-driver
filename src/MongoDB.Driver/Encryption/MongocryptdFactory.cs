@@ -130,11 +130,11 @@ namespace MongoDB.Driver.Encryption
 
                 if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)){
                     string fileName = "mongocryptd";
-                    if((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory) 
+                    if((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory) {
                         path = Path.Combine(path, fileName);
                     }
                 }
-                
+
                 args = string.Empty;
                 if (_extraOptions.TryGetValue("mongocryptdSpawnArgs", out var mongocryptdSpawnArgs))
                 {
