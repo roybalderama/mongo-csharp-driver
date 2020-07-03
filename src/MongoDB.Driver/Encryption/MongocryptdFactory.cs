@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Driver.Core.Misc;
+using System.Runtime.InteropServices;
 
 namespace MongoDB.Driver.Encryption
 {
@@ -118,12 +119,22 @@ namespace MongoDB.Driver.Encryption
                     path = string.Empty; // look at the PATH env variable
                 }
 
-                if (!Path.HasExtension(path))
+                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    string fileName = "mongocryptd.exe";
-                    path = Path.Combine(path, fileName);
+                    if (!Path.HasExtension(path))
+                    {
+                        string fileName = "mongocryptd.exe";
+                        path = Path.Combine(path, fileName);
+                    }
                 }
 
+                if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)){
+                    string fileName = "mongocryptd";
+                    if((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory) 
+                        path = Path.Combine(path, fileName);
+                    }
+                }
+                
                 args = string.Empty;
                 if (_extraOptions.TryGetValue("mongocryptdSpawnArgs", out var mongocryptdSpawnArgs))
                 {
