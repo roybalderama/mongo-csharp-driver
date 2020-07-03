@@ -130,9 +130,8 @@ namespace MongoDB.Driver.Encryption
 
                 if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)){
                     string fileName = "mongocryptd";
-                    if((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory) {
-                        path = Path.Combine(path, fileName);
-                    }
+                    var isPathDirectory = (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory);
+                    path = isPathDirectory ? Path.Combine(path, fileName) : fileName;
                 }
 
                 args = string.Empty;
