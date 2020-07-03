@@ -38,11 +38,10 @@ var srcProjectNames = new[]
 };
 
 Task("Default")
-    .IsDependentOn("Test");
+    .IsDependentOn("Build");
 
 Task("Release")
     .IsDependentOn("Build")
-    .IsDependentOn("Test")
     .IsDependentOn("Docs")
     .IsDependentOn("Package");
 
