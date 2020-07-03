@@ -119,6 +119,7 @@ namespace MongoDB.Driver.Encryption
                     path = string.Empty; // look at the PATH env variable
                 }
 
+                
                 if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     if (!Path.HasExtension(path))
@@ -127,18 +128,23 @@ namespace MongoDB.Driver.Encryption
                         path = Path.Combine(path, fileName);
                     }
                 }
-                // declare mongocryptd filename here
-                string fileName = "mongocryptd";
 
                 // check if OS is non-windows
-                if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)){
+                if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    string fileName = "mongocryptd";  // declare mongocryptd filename here
+                    path = fileName; // set the path using the provided filename
+
                     // if yes, update the mongodcryptd directory with correct path
                     var isPathDirectory = (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory;
-                    path = isPathDirectory ? Path.Combine(path, fileName) : fileName;
-                } else { // set the path using the provided filename
-                    path = fileName;
+                    if(isPathDirectory)
+                    {
+                        if(!string.IsNullOrEmpty(path))
+                        {
+                            path = Path.Combine(path, fileName);
+                        }
+                    } 
                 }
-
                 args = string.Empty;
                 if (_extraOptions.TryGetValue("mongocryptdSpawnArgs", out var mongocryptdSpawnArgs))
                 {
