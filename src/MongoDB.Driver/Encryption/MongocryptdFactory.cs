@@ -127,11 +127,16 @@ namespace MongoDB.Driver.Encryption
                         path = Path.Combine(path, fileName);
                     }
                 }
+                // declare mongocryptd filename here
+                string fileName = "mongocryptd";
 
+                // check if OS is non-windows
                 if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)){
-                    string fileName = "mongocryptd";
+                    // if yes, update the mongodcryptd directory with correct path
                     var isPathDirectory = (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory;
                     path = isPathDirectory ? Path.Combine(path, fileName) : fileName;
+                } else { // set the path using the provided filename
+                    path = fileName;
                 }
 
                 args = string.Empty;
